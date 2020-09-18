@@ -44,6 +44,7 @@ function App() {
             }
           ));
           setCountries(countries);
+          setTableData(data);
         });
     };
     getCountriesData();
@@ -53,7 +54,8 @@ function App() {
    const onCountryChange = async (e) => {
     const countryCode = e.target.value;
     setInputCountry(countryCode);
-
+    
+    //get the data of each country by using countrycode and this is selected from dropdown 
     const url =
       countryCode === "worldwide"
         ? "https://disease.sh/v3/covid-19/all"
@@ -70,59 +72,39 @@ function App() {
 
 
   return (
-    <div className="App">
-        <p> Covid tarcker app</p>
-        {/* 1.Header */}
-        <div className='app_header'> 
-          <FormControl className="app__dropdown">
-              <Select variant="outlined" value={country} onChange={onCountryChange}> 
-                <MenuItem value="worldwide">Worldwide</MenuItem>
-                {countries.map((country) => (
-                  <MenuItem value={country.value}>{country.name}</MenuItem>
-                ))}
-              </Select>
-          </FormControl>
-        </div>
-         
-         {/* 2.Some data of coronavirus */}
-        <div className="app__stats">
-          <InfoBox
-            onClick={(e) => setCasesType("cases")}
-            title="Coronavirus Cases"
-            isRed
-            active={casesType === "cases"}
-            cases={countryInfo.todayCases}
-            // total={numeral(countryInfo.cases).format("0.0a")}
-          />
-          <InfoBox
-            onClick={(e) => setCasesType("recovered")}
-            title="Recovered"
-            active={casesType === "recovered"}
-            cases={countryInfo.todayRecovered}
-            // total={numeral(countryInfo.recovered).format("0.0a")}
-          />
-          <InfoBox
-            onClick={(e) => setCasesType("deaths")}
-            title="Deaths"
-            isRed
-            active={casesType === "deaths"}
-            cases={countryInfo.todayDeaths}
-            // total={numeral(countryInfo.deaths).format("0.0a")}
-          />
-        </div>
-        <Card className="app__right">
-        <CardContent>
-          <div className="app__information">
-            <h3>Live Cases by Country</h3>
-            <Table countries={tableData} />
-            <h3>Worldwide new {casesType}</h3>
-            {/* <LineGraph casesType={casesType} /> */}
-          </div>
-        </CardContent>
-      </Card>
-        
-
+    <div className="app">
+    <div className="app__left">
+      <div className="app__header">
+        <h1>COVID-19 Tracker</h1>
+        <FormControl className="app__dropdown">
+          <Select
+            variant="outlined"
+            value={country}
+            onChange={onCountryChange}
+          >
+            <MenuItem value="worldwide">Worldwide</MenuItem>
+            {countries.map((country) => (
+              <MenuItem value={country.value}>{country.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+      <div className="app__stats">
+        <InfoBox onClick={(e) => setCasesType("cases")}  title="Coronavirus Cases"isRed active={casesType === "cases"} cases={countryInfo.todayCases} />
+        <InfoBox onClick={(e) => setCasesType("recovered")} title="Recovered" active={casesType === "recovered"} cases={countryInfo.todayRecovered} />
+        <InfoBox onClick={(e) => setCasesType("deaths")} title="Deaths" isRed active={casesType === "deaths"} cases={countryInfo.todayDeaths} />
+      </div>
     </div>
+    <Card className="app__right">
+      <CardContent>
+        <div className="app__information">
+          <h3>Live Cases by Country</h3>
+          <Table countries={tableData} />
+          <h3>Worldwide new {casesType}</h3>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
   );
 }
 
