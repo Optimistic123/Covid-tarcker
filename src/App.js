@@ -8,8 +8,8 @@ import LineGraph from "./LineGraph";
 import Table from "./Table";
 //import { sortData, prettyPrintStat } from "./util";
 import numeral from "numeral";
-//import Map from "./Map";
-//import "leaflet/dist/leaflet.css";
+import Map from "./Map";
+import "leaflet/dist/leaflet.css";
 
 function App() {
 
@@ -100,13 +100,20 @@ function App() {
         <InfoBox onClick={(e) => setCasesType("recovered")} title="Recovered" active={casesType === "recovered"} cases={countryInfo.todayRecovered} />
         <InfoBox onClick={(e) => setCasesType("deaths")} title="Deaths" isRed active={casesType === "deaths"} cases={countryInfo.todayDeaths} />
       </div>
+      <Map
+          countries={mapCountries}
+          casesType={casesType}
+          center={mapCenter}
+          zoom={mapZoom}
+        />
     </div>
+
     <Card className="app__right">
       <CardContent>
         <div className="app__information">
           <h3>Live Cases by Country</h3>
           <Table countries={tableData} />
-          <h3>{country} {casesType}</h3>
+          <h3>Worldwide {casesType}</h3>
           {/* <p>Line graph</p> */}
           <LineGraph casesType={casesType} />
         </div>
