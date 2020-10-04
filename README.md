@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
-Covid data represenation in - Table,Map and Graph
+Covid data represenation in - Table,Map and Graph,
 Circle and Popup in map represenation attractive.
 
 See live - https://covid-data-representation.web.app
