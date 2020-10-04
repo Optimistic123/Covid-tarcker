@@ -12,13 +12,21 @@ import Map from "./Map";
 import "leaflet/dist/leaflet.css";
 
 function App() {
-
+  //select a country
   const [country, setInputCountry] = useState("worldwide");
+  //collect data as a whole i.e coolective data from all countries
   const [countryInfo, setCountryInfo] = useState({});
+  //store data for a particular country i.e name of country and cases of that country
   const [countries, setCountries] = useState([]);
-  const [mapCountries, setMapCountries] = useState([]);
-  const [tableData, setTableData] = useState([]);
+  //store data for each cases i.e all ,recovered, death
   const [casesType, setCasesType] = useState("cases");
+ 
+
+  //store data of each country used for table representation
+  const [tableData, setTableData] = useState([]);
+  //store country for mappimg country in map
+  const [mapCountries, setMapCountries] = useState([]);
+  //initialize center of map nad zoom type
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
   const [mapZoom, setMapZoom] = useState(3);
 
@@ -31,7 +39,7 @@ function App() {
       });
   }, []);
   
-  //API call for data of covid - 19
+  //API call for data of covid - 19 for a pricular country
   useEffect(() => {
     const getCountriesData = async () => {
       await fetch("https://disease.sh/v3/covid-19/countries")
@@ -43,8 +51,9 @@ function App() {
             value: country.countryInfo.iso2,
             }
           ));
-          setCountries(countries);
-          setTableData(data);
+          setCountries(countries);   //data store name of a country and cases in that country
+          setMapCountries(data)
+          setTableData(data);       
         });
     };
     getCountriesData();
@@ -60,14 +69,15 @@ function App() {
       countryCode === "worldwide"
         ? "https://disease.sh/v3/covid-19/all"
         : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
-    await fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setInputCountry(countryCode);
-        setCountryInfo(data);
-        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
-        setMapZoom(4);
-      });
+        await fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            setInputCountry(countryCode);
+            setCountryInfo(data);
+
+            setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+            setMapZoom(4);
+          });
   };
 
 
@@ -96,9 +106,17 @@ function App() {
         title="Coronavirus Cases" 
         isRed 
         active={casesType === "cases"} 
-        cases={countryInfo.todayCases} />
-        <InfoBox onClick={(e) => setCasesType("recovered")} title="Recovered" active={casesType === "recovered"} cases={countryInfo.todayRecovered} />
-        <InfoBox onClick={(e) => setCasesType("deaths")} title="Deaths" isRed active={casesType === "deaths"} cases={countryInfo.todayDeaths} />
+        cases={countryInfo.todayCases} 
+        total={numeral(countryInfo.cases).format("0.0a")}
+        />
+        <InfoBox onClick={(e) => setCasesType("recovered")} title="Recovered" active={casesType === "recovered"} 
+         cases={countryInfo.todayRecovered} 
+         total={numeral(countryInfo.recovered).format("0.0a")}
+         />
+        <InfoBox onClick={(e) => setCasesType("deaths")} title="Deaths" isRed active={casesType === "deaths"} 
+         cases={countryInfo.todayDeaths} 
+         total={numeral(countryInfo.deaths).format("0.0a")}
+         />
       </div>
       <Map
           countries={mapCountries}
